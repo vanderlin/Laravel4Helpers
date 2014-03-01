@@ -1,0 +1,20 @@
+{
+    "name": "vanderlin/helper",
+    "description": "",
+    "authors": [
+        {
+            "name": "Todd Vanderlin",
+            "email": "todd@vanderlin.cc"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.1.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Vanderlin\\Helper": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
