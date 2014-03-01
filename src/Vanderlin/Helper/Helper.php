@@ -8,7 +8,7 @@ class Helper {
 		return "test";
 	}
 
-	public static function isSetInArray($array, $thing, $default=NULL) {
+	public static function isSetInArray($array, $thing, $default = null) {
 		return isset($array[$thing]) ? $array[$thing] : $default;
 	}
 
@@ -33,17 +33,73 @@ class Helper {
 		
 	}
 
+	// -------------------------------------------------------------
+	public static function num_to_abc($n) { 
+		$abc = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+		return isset($abc[$n]) ? $abc[$n] : $n;
+	}
+
+	// -------------------------------------------------------------
+	public static function truncate_str($str, $max=100, $append="...") { 
+		$s = preg_replace('/\s+?(\S+)?$/', '', substr($str, 0, $max));
+		if(strlen($str)>$max && $append!="") $s .= $append;
+		return $s;
+	}
+
+	// -------------------------------------------------------------
+	public static function saveImageForType($options, $object) {
+
+		$options['path'] = Helper::isSetInArray($options, 'path', 'images');
+		$options['file'] = Helper::isSetInArray($options, 'file', null);
+		$options['file_prefix'] = Helper::isSetInArray($options, 'file_prefix', '');
+
+		if($options['file'] != null) {
+
+			$path = $options['path'];
+			$file = $options['file'];
+
+			if(File::exists($path.$object)) {
+				File::delete($path.$object);
+			}
+
+			$org_name = $file->getClientOriginalName();
+			$dot_pos  = strpos($org_name, ".");
+			if($dot_pos !== false) $org_name = substr($org_name, 0, $dot_pos);
+			
+			$filename = "";
+
+			if($options['file_prefix']!="") $filename .= $options['file_prefix']."_";
+			$filename .= Helper::to_permalink($org_name);
+			$filename .= ".".$file->getClientOriginalExtension();
+
+			$object = $filename;
+
+			// if we do not have the folder
+			// make it and save it. 
+			Helper::make_dir( $path );
+
+			$file->move($path, $filename);
+			
+			return $filename;
+		}
+
+		return "";
+	
+	}
+	// -------------------------------------------------------------
 
 
     public static function img_resize($path, $size) {
         $token = explode("assets/", $path);
+        
         $url = $path;
         if(count($token) > 1) {
-           $url = 'assets/'.$size.'/'.$token[1];
+           $url = 'assets_resize/'.$size.'/'.$token[1];
         }
         return strpos($url, "http")===false ? asset($url) : $url;
     }
     
+	// -------------------------------------------------------------
 	public static function make_edit_link($options) {
 
 		$edit = [
@@ -81,6 +137,5 @@ class Helper {
 			  	</a>*/
 
 	}
-
 
 }
